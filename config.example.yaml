@@ -1,0 +1,35 @@
+# Banff Auto-Booker Configuration
+# Copy this file to config.yaml and fill in your preferences.
+
+# Target campgrounds in priority order.
+# The booker will try each in order until one succeeds.
+# Use the campground URL slug as it appears on reservation.pc.gc.ca
+campgrounds:
+  - name: "Two Jack Lakeside"
+    url_slug: "TwoJackLakeside"
+  - name: "Tunnel Mountain Village I"
+    url_slug: "TunnelMountainVillageI"
+  - name: "Tunnel Mountain Village II"
+    url_slug: "TunnelMountainVillageII"
+
+# Desired dates
+dates:
+  check_in: "2026-07-10"       # YYYY-MM-DD
+  check_out: "2026-07-13"      # YYYY-MM-DD
+  # Optional: if your dates are flexible, the booker will try
+  # shifting within this window if exact dates are unavailable
+  flexible_days: 2              # +/- days to shift
+
+# Party details
+party:
+  size: 4                       # Number of people
+  equipment: "tent"             # tent | rv | trailer
+
+# Optional: preferred site numbers (tried in order, falls back to any available)
+preferred_sites: []
+# preferred_sites: ["A21", "A22", "A15"]
+
+# Notification settings
+notifications:
+  sound: true                   # Play alert sound on key events
+  desktop: true                 # Show desktop notification

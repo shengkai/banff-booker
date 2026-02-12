@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "auto-booker"
+version = "0.1.0"
+description = "Semi-automated Banff National Park campsite booker for Parks Canada launch day"
+requires-python = ">=3.10"
+dependencies = [
+    "playwright>=1.40",
+    "playwright-stealth>=1.0.6",
+    "pyyaml>=6.0",
+    "click>=8.1",
+    "rich>=13.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]
+
+[project.scripts]
+auto-booker = "auto_booker.main:cli"
+
+[tool.setuptools.packages.find]
+where = ["src"]
