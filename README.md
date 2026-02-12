@@ -14,12 +14,19 @@ on Parks Canada's reservation system ([reservation.pc.gc.ca](https://reservation
 
 ## Setup
 
+**Quick setup (recommended):**
 ```bash
-# 1. Create project structure
-python setup_project.py
+setup.bat
+```
+
+**Manual setup:**
+```bash
+# 1. Create virtual environment
+python -m venv venv
+venv\Scripts\activate.bat
 
 # 2. Install the package
-pip install -e .
+pip install -e ".[dev]"
 
 # 3. Install Playwright browsers
 playwright install chromium
