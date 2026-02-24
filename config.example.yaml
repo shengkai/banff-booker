@@ -4,23 +4,23 @@
 # Target campgrounds in priority order.
 # The booker will try each in order until one succeeds.
 campgrounds:
-  - name: "Johnston Canyon"
-  - name: "Tunnel Mountain - Village 1"
-    preferred_sites: ["A21", "A22"]    # optional: preferred site numbers
-  - name: "Tunnel Mountain - Village 2"
-  - name: "Two Jack Lakeside"
+  #- name: "Johnston Canyon"
+  #- name: "Tunnel Mountain - Village 1"
+  #  preferred_sites: ["A21", "A22"]    # optional: preferred site numbers
+  #- name: "Tunnel Mountain - Village 2"
+  #- name: "Two Jack Lakeside"
   - name: "Two Jack Main"
     preferred_sections: ["Loops 22-27"]  # optional: target a specific loop/section
     preferred_sites: ["22", "23"]        # optional: preferred site numbers within the section
-  - name: "Castle Mountain"
+  #- name: "Castle Mountain"
 
 # Desired dates
 dates:
-  check_in: "2026-07-10"       # YYYY-MM-DD
+  check_in: "2026-07-12"       # YYYY-MM-DD
   check_out: "2026-07-13"      # YYYY-MM-DD
   # Optional: if your dates are flexible, the booker will try
   # shifting within this window if exact dates are unavailable
-  flexible_days: 2              # +/- days to shift
+  flexible_days: 1              # +/- days to shift
 
 # Party details
 party:

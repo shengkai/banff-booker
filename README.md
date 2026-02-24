@@ -5,17 +5,20 @@ on Parks Canada's reservation system ([reservation.pc.gc.ca](https://reservation
 
 ## What It Does
 
-1. **Opens a browser** for you to manually log in via GCKey and wait through the virtual queue
-2. **Automatically navigates** to your target campground, selects dates, and picks an available site at maximum speed
-3. **Pauses before payment** so you can review and confirm manually
+1. **Automatically navigates** to your target campground, selects dates, and picks an available site at maximum speed
+2. **Pauses before payment** so you can log in via GCKey and confirm manually
 
 > ⚠️ This tool does **not** skip the queue or bypass any anti-bot measures.
 > It simply automates form navigation so you don't lose precious seconds clicking through menus.
 
 ## Setup
 
-**Quick setup (recommended):**
+**Quick setup:**
 ```bash
+# macOS / Linux
+bash setup.sh
+
+# Windows
 setup.bat
 ```
 
@@ -23,7 +26,8 @@ setup.bat
 ```bash
 # 1. Create virtual environment
 python -m venv venv
-venv\Scripts\activate.bat
+source venv/bin/activate        # macOS/Linux
+# venv\Scripts\activate.bat     # Windows
 
 # 2. Install the package
 pip install -e ".[dev]"
@@ -32,7 +36,7 @@ pip install -e ".[dev]"
 playwright install chromium
 
 # 4. Copy and edit config
-copy config.example.yaml config.yaml
+cp config.example.yaml config.yaml
 # Edit config.yaml with your campground preferences
 ```
 
@@ -45,41 +49,73 @@ auto-booker
 # Run with a custom config file
 auto-booker -c my_config.yaml
 
-# Adjust timeouts
-auto-booker --login-timeout 20 --queue-timeout 180
+# Adjust the virtual-queue wait timeout (default 120 min)
+auto-booker --queue-timeout 180
 ```
 
 ## Configuration
 
-See `config.example.yaml` for all options:
+See `config.example.yaml` for all options. Key fields:
 
-- **campgrounds** — Priority-ordered list of target campgrounds
-- **dates** — Check-in/out dates with optional flexibility window
-- **party** — Party size and equipment type
-- **preferred_sites** — Optional list of preferred site numbers
-- **notifications** — Sound and desktop alert preferences
+```yaml
+campgrounds:
+  - name: "Two Jack Main"
+    preferred_sections: ["Loops 22-27"]  # optional: target a specific loop/section
+    preferred_sites: ["22B", "22C"]      # optional: preferred site numbers within the section
+
+  - name: "Tunnel Mountain - Village 1"
+    preferred_sites: ["A21", "A22"]      # no section needed for lettered campgrounds
+
+dates:
+  check_in: "2026-07-12"
+  check_out: "2026-07-13"
+  flexible_days: 2        # +/- days to try if exact dates are unavailable
+
+party:
+  size: 4
+  equipment: "Medium Tent"
+
+notifications:
+  sound: true
+  desktop: true
+```
+
+### Configuration options
+
+| Field | Scope | Description |
+|---|---|---|
+| `campgrounds[].name` | per campground | Campground name as shown on Parks Canada |
+| `campgrounds[].preferred_sections` | per campground | Section/loop names to target first (e.g. `["Loops 22-27"]`) |
+| `campgrounds[].preferred_sites` | per campground | Site IDs to target first (e.g. `["A21", "22B"]`); falls back to first available |
+| `dates.check_in` / `check_out` | global | Desired nights in `YYYY-MM-DD` format |
+| `dates.flexible_days` | global | Shifts the window ±N days when exact dates are unavailable |
+| `party.size` | global | Number of people |
+| `party.equipment` | global | Equipment type shown in Parks Canada's dropdown |
+| `notifications.sound` / `desktop` | global | Alert when booking is ready for payment |
 
 ## Launch Day Tips
 
 1. **Create your GCKey account** well before launch day
-2. **Test the tool** in advance by running it against the live site (you can search without booking)
+2. **Test the tool** in advance — run it against the live site to verify the search flow
 3. On launch day, start the tool **30+ minutes early** — the virtual queue opens ~30 min before reservations
-4. **Log in via GCKey** in the browser window when prompted
-5. Wait in the queue — the tool will alert you when you're through
-6. The bot takes over navigation — watch it go!
-7. **Review and pay** manually when prompted
+4. Wait in the queue — the tool will alert you when you're through and take over automatically
+5. **Log in and pay** manually when the browser pauses at the payment screen
 
 ## Architecture
 
 ```
 src/auto_booker/
 ├── main.py      # CLI entry point (Click)
-├── config.py    # YAML config loading
+├── config.py    # YAML config loading (Campground, Dates, Party, Config)
 ├── browser.py   # Playwright browser session (persistent, stealth)
-├── auth.py      # Manual login detection
-├── search.py    # Campground search, queue detection
-├── booking.py   # Site selection, form filling, checkout
+├── auth.py      # Login detection (kept for reference)
+├── search.py    # Park selection, date picker, campground search, queue detection
+├── booking.py   # Section/site selection (expansion-panel DOM), reserve flow
 └── notify.py    # Sound & desktop notifications
+
+tests/
+├── test_config.py   # Config loading unit tests
+└── test_booking.py  # Booking logic unit tests (mocked Playwright)
 ```
 
 ## Disclaimer
