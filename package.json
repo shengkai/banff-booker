@@ -1,0 +1,26 @@
+{
+  "name": "banff-booker",
+  "version": "1.0.0",
+  "description": "Semi-automated tool to help you book **frontcountry campsites** at Banff National Park on Parks Canada's reservation system ([reservation.pc.gc.ca](https://reservation.pc.gc.ca)).",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shengkai/banff-booker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/shengkai/banff-booker/issues"
+  },
+  "homepage": "https://github.com/shengkai/banff-booker#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@types/node": "^25.2.3"
+  }
+}

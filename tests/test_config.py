@@ -10,20 +10,18 @@ from auto_booker.config import load_config
 SAMPLE_YAML = """
 campgrounds:
   - name: "Two Jack Lakeside"
-    url_slug: "TwoJackLakeside"
   - name: "Tunnel Mountain Village I"
-    url_slug: "TunnelMountainVillageI"
+    preferred_sections: ["A"]
+    preferred_sites: ["A21", "A22"]
 
 dates:
-  check_in: "2026-07-10"
+  check_in: "2026-07-12"
   check_out: "2026-07-13"
   flexible_days: 2
 
 party:
   size: 4
   equipment: tent
-
-preferred_sites: ["A21", "A22"]
 
 notifications:
   sound: true
@@ -39,13 +37,13 @@ def test_load_config():
 
     assert len(cfg.campgrounds) == 2
     assert cfg.campgrounds[0].name == "Two Jack Lakeside"
-    assert cfg.campgrounds[0].url_slug == "TwoJackLakeside"
-    assert str(cfg.dates.check_in) == "2026-07-10"
+    assert str(cfg.dates.check_in) == "2026-07-12"
     assert str(cfg.dates.check_out) == "2026-07-13"
     assert cfg.dates.flexible_days == 2
     assert cfg.party.size == 4
     assert cfg.party.equipment == "tent"
-    assert cfg.preferred_sites == ["A21", "A22"]
+    assert cfg.campgrounds[1].preferred_sections == ["A"]
+    assert cfg.campgrounds[1].preferred_sites == ["A21", "A22"]
     assert cfg.notifications.sound is True
     assert cfg.notifications.desktop is False
 

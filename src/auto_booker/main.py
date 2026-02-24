@@ -11,14 +11,9 @@ from rich.panel import Panel
 
 from .config import load_config
 from .browser import BrowserSession
-from .auth import wait_for_login
 from .search import wait_through_queue, navigate_to_campground
 from .booking import (
-    find_available_sites,
-    select_site,
-    click_book,
-    fill_booking_form,
-    advance_to_checkout,
+    book_site,
     pause_before_payment,
     take_screenshot,
 )
@@ -34,18 +29,12 @@ console = Console()
     help="Path to YAML config file.",
 )
 @click.option(
-    "--login-timeout",
-    default=15,
-    type=int,
-    help="Minutes to wait for manual login (default 15).",
-)
-@click.option(
     "--queue-timeout",
     default=120,
     type=int,
     help="Minutes to wait in virtual queue (default 120).",
 )
-def cli(config: str, login_timeout: int, queue_timeout: int) -> None:
+def cli(config: str, queue_timeout: int) -> None:
     """Banff National Park campsite auto-booker.
 
     Semi-automated tool that helps you book frontcountry campsites
@@ -65,18 +54,13 @@ def cli(config: str, login_timeout: int, queue_timeout: int) -> None:
     try:
         page = session.launch()
 
-        # ── Step 1: Login ──────────────────────────────────────────────
-        if not wait_for_login(page, timeout_minutes=login_timeout):
-            session.close()
-            sys.exit(1)
-
-        # ── Step 2: Queue ──────────────────────────────────────────────
+        # ── Step 1: Queue ──────────────────────────────────────────────
         if not wait_through_queue(page, timeout_minutes=queue_timeout):
             session.close()
             sys.exit(1)
 
-        # ── Step 3: Search & Book ──────────────────────────────────────
-        console.rule("[bold cyan]Step 3 · Search & Book[/]")
+        # ── Step 2: Search & Book ───────────────────────────────────────
+        console.rule("[bold cyan]Step 2 · Search & Book[/]")
 
         booked = False
         date_variants = cfg.dates.date_variants()
@@ -91,21 +75,7 @@ def cli(config: str, login_timeout: int, queue_timeout: int) -> None:
                 ):
                     continue
 
-                available = find_available_sites(page)
-                if not available:
-                    console.print("[yellow]No sites available, trying next option...[/]")
-                    continue
-
-                site = select_site(page, available, cfg.preferred_sites)
-                if site is None:
-                    continue
-
-                if not click_book(page, site):
-                    continue
-
-                fill_booking_form(page, cfg.party.size, cfg.party.equipment)
-
-                if advance_to_checkout(page):
+                if book_site(page, campground.preferred_sections, campground.preferred_sites):
                     booked = True
                     break
 

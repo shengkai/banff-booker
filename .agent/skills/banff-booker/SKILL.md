@@ -43,7 +43,6 @@ If all options exhausted, browser stays open for manual fallback.
 ```yaml
 campgrounds:                    # priority-ordered
   - name: "Two Jack Lakeside"
-    url_slug: "TwoJackLakeside"
 dates:
   check_in: "2026-07-10"
   check_out: "2026-07-13"
@@ -57,7 +56,7 @@ notifications:
   desktop: true
 ```
 
-The `url_slug` must match the campground path on reservation.pc.gc.ca.
+Campground names must match the names shown in the Parks Canada search results (e.g. `"Two Jack Lakeside"`).
 
 ## Key Patterns
 
@@ -91,6 +90,6 @@ pytest tests/test_config.py -k test_load_config # single test
 
 ## Adding a New Campground
 
-1. Visit reservation.pc.gc.ca, navigate to the campground
-2. Copy the URL path segment (e.g., `TwoJackLakeside` from the URL)
-3. Add to `config.yaml` under `campgrounds` with `name` and `url_slug`
+1. Visit reservation.pc.gc.ca and run a search for Banff.
+2. Switch to List view and note the exact campground name shown (e.g. `Site Two Jack Lakeside`).
+3. Add it to `config.yaml` under `campgrounds` with only the `name` field (no `url_slug` needed).

@@ -14,7 +14,8 @@ import yaml
 @dataclass
 class Campground:
     name: str
-    url_slug: str
+    preferred_sections: list[str] = field(default_factory=list)
+    preferred_sites: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -38,7 +39,7 @@ class Dates:
 @dataclass
 class Party:
     size: int = 2
-    equipment: str = "tent"
+    equipment: str = "Medium Tent"
 
 
 @dataclass
@@ -52,7 +53,6 @@ class Config:
     campgrounds: list[Campground] = field(default_factory=list)
     dates: Dates = field(default_factory=lambda: Dates(date.today(), date.today()))
     party: Party = field(default_factory=Party)
-    preferred_sites: list[str] = field(default_factory=list)
     notifications: Notifications = field(default_factory=Notifications)
 
 
@@ -67,7 +67,11 @@ def load_config(path: str | Path) -> Config:
         raw = yaml.safe_load(f)
 
     campgrounds = [
-        Campground(name=c["name"], url_slug=c["url_slug"])
+        Campground(
+            name=c["name"],
+            preferred_sections=c.get("preferred_sections", []),
+            preferred_sites=c.get("preferred_sites", []),
+        )
         for c in raw.get("campgrounds", [])
     ]
 
@@ -94,6 +98,5 @@ def load_config(path: str | Path) -> Config:
         campgrounds=campgrounds,
         dates=dates,
         party=party,
-        preferred_sites=raw.get("preferred_sites", []),
         notifications=notifications,
     )
